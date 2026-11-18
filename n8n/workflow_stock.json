@@ -1,0 +1,158 @@
+{
+  "name": "SmartStock - Surveillance",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours",
+              "hoursInterval": 3
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        160,
+        0
+      ],
+      "id": "5756de25-11b5-40d9-81ac-c0f676e4bfa7",
+      "name": "Cron 3h"
+    },
+    {
+      "parameters": {
+        "fileSelector": "/project/logs/status.json",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1.1,
+      "position": [
+        304,
+        0
+      ],
+      "id": "37bba0f8-d676-4742-8497-c5c13a75d8f6",
+      "name": "Lire le statut"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "fd5eb451-a672-41c3-bc97-c3e66f4aa963",
+              "leftValue": "={{ JSON.parse($json.data.toString()).critiques }}",
+              "rightValue": "={{ 0 }}",
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.4,
+      "position": [
+        448,
+        0
+      ],
+      "id": "9cc3a36c-135a-4f2e-998a-20e1dcebdc8b",
+      "name": "Alertes critiques ?"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "a1",
+              "name": "statut",
+              "value": "={{ `ALERTES CRITIQUES : ${JSON.parse($json.data.toString()).critiques}` }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        672,
+        -96
+      ],
+      "id": "442146fa-c928-40f5-bc5c-14f6809a6f00",
+      "name": "Alerte critique"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        672,
+        96
+      ],
+      "id": "9d5ae2c6-8986-4d43-8264-bed9d6a8b2b5",
+      "name": "RAS"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Cron 3h": {
+      "main": [
+        [
+          {
+            "node": "Lire le statut",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Lire le statut": {
+      "main": [
+        [
+          {
+            "node": "Alertes critiques ?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Alertes critiques ?": {
+      "main": [
+        [
+          {
+            "node": "Alerte critique",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "RAS",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "31e76eb6-f955-46d0-aad3-ea2bd69cf390",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "id": "SmartStockTe3D31X2QQ",
+  "tags": []
+}

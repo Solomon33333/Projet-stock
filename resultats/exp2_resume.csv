@@ -1,0 +1,3 @@
+methode,mae_moyenne,rmse_moyen
+baseline_naive,2.353,2.982
+moyenne_mobile,2.236,2.919

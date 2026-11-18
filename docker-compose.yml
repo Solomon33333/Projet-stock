@@ -1,0 +1,31 @@
+services:
+  n8n:
+    image: docker.n8n.io/n8nio/n8n:latest
+    container_name: stock-n8n
+    restart: unless-stopped
+    ports:
+      - "5678:5678"
+    environment:
+      - GENERIC_TIMEZONE=Indian/Antananarivo
+      - TZ=Indian/Antananarivo
+      - N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS=true
+      - N8N_ENABLE_EXECUTE_COMMAND=true
+      - NODES_EXCLUDE=[]
+      - N8N_RESTRICT_FILE_ACCESS_TO=/project/logs;/project/data
+      - NODE_OPTIONS=--dns-result-order=ipv4first
+    volumes:
+      - n8n_data:/home/node/.n8n
+      - ./scripts:/project/scripts:ro
+      - ./data:/project/data:rw
+      - ./logs:/project/logs:rw
+    user: "1000:1000"
+    dns:
+      - 8.8.8.8
+      - 1.1.1.1
+    
+    extra_hosts:
+      - "smtp.gmail.com:142.251.127.108"
+      - "www.googleapis.com:142.251.127.108"
+
+volumes:
+  n8n_data:

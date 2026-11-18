@@ -1,0 +1,8 @@
+metrique,valeur
+TP,7.0
+FP,27.0
+FN,0.0
+TN,716.0
+precision,0.206
+rappel,1.0
+f1,0.341
